@@ -6,9 +6,11 @@
         <h2 style="margin-top:0px">Siswa List</h2>
         <div class="row" style="margin-bottom: 10px">
             <div class="col-md-4">
-
+            
                 <?php if ($this->session->userdata('role_id') == 1){
                     echo anchor(site_url('siswa/tambah'),'Tambah Siswa', 'class="btn btn-primary"');
+                    echo anchor(site_url('laporan/excel_siswa'), '<i class="fa fa-file-excel"></i> Excel', 'class="btn btn-sm btn-success ml-1 mt-1"');
+		            echo anchor(site_url('siswa/word'), '<i class="fa fa-file-word"></i> Word', 'class="btn btn-sm btn-primary ml-1 mt-1"');
                 }else{} ?>
 
             </div>
@@ -37,7 +39,7 @@
             {
                 ?>
                 <tr>
-			<td width="80px"><?php echo ++$start ?></td>
+			<td width="80px"><?php $no=1; echo $no++ ?></td>
 			<td><?php echo $siswa->siswa_nis ?></td>
 			<td><?php echo $siswa->siswa_nama ?></td>
 			<td><?php echo $siswa->siswa_gender ?></td>
@@ -59,15 +61,16 @@
             ?>
         </table>
     </div>
+		
         <div class="row">
-            <div class="col-md-6">
-                <a href="#" class="btn btn-sm btn-primary">Total Record : <?php echo $total_rows ?></a>
-		<?php echo anchor(site_url('laporan/excel_siswa'), '<i class="fa fa-file-excel"></i> Excel', 'class="btn btn-sm btn-success"'); ?>
-		<?php echo anchor(site_url('siswa/word'), '<i class="fa fa-file-word"></i> Word', 'class="btn btn-sm btn-primary"'); ?>
-	    </div>
-            <div class="col-md-6 text-right">
-                <?php echo $pagination ?>
+            <div class="col mt-1 mb-1">
+                <!--Tampilkan pagination-->
+                <?php echo $pagination; ?>
             </div>
+        </div>
+	    
+        </div>
+        
         </div>
         </div>
 
