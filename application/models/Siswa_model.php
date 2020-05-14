@@ -15,22 +15,20 @@ class Siswa_model extends CI_Model
         parent::__construct();
     }
     //join tabel
-    public function gabung(){
+    public function gabung($limit, $start){
         $this->db->select('*');
-        $this->db->from('siswa');
         $this->db->join('kelas', 'kelas.kelas_id = siswa.siswa_kelas_id');
         $this->db->join('kesehatan', 'kesehatan.kesehatan_id = siswa.siswa_kesehatan_id');
         $this->db->join('permasalahan', 'permasalahan.permasalahan_id = siswa.siswa_permasalahan_id');
         $this->db->join('psikologi', 'psikologi.psikologi_id = siswa.siswa_psikologi_id');
         $this->db->join('sosial', 'sosial.sosial_id = siswa.siswa_sosial_id');
-        return $this->db->get()->result();
+        return $this->db->get('siswa', $limit, $start)->result();
     }
 
-    public function gabung_kelas(){
+    public function gabung_kelas($limit, $start){
         $this->db->select('*');
-        $this->db->from('siswa');
         $this->db->join('kelas', 'kelas.kelas_id = siswa.siswa_kelas_id');
-        return $this->db->get()->result();
+        return $this->db->get('siswa', $limit, $start)->result();
     }
 
     // get all
