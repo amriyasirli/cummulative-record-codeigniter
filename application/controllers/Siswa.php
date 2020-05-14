@@ -11,6 +11,8 @@ class Siswa extends CI_Controller
         $this->load->model('Siswa_model');
         $this->load->model('Kelas_model');
         $this->load->library('form_validation');
+        $this->load->library('pagination');
+
 
         // ------Authentication-------
         if(!$this->session->userdata('username')){
@@ -22,33 +24,55 @@ class Siswa extends CI_Controller
 
     public function index()
     {
-        $q = urldecode($this->input->get('q', TRUE));
-        $start = intval($this->input->get('start'));
+        $page=$this->uri->segment(3);
+        if(!$page):
+            $offset = 0;
+        else:
+            $offset = $page;
+        endif;
+        $limit=10;
+        $config['base_url'] = base_url('Siswa/index'); //site url
+        $config['total_rows'] = $this->db->count_all('siswa'); //total row
+        $config['per_page'] = $limit;  //show record per halaman
+        $config["uri_segment"] = 3;  // uri parameter
         
-        if ($q <> '') {
-            $config['base_url'] = base_url() . 'siswa/index.html?q=' . urlencode($q);
-            $config['first_url'] = base_url() . 'siswa/index.html?q=' . urlencode($q);
-        } else {
-            $config['base_url'] = base_url() . 'siswa/index.html';
-            $config['first_url'] = base_url() . 'siswa/index.html';
-        }
+        
 
-        $config['per_page'] = 10;
-        $config['page_query_string'] = TRUE;
-        $config['total_rows'] = $this->Siswa_model->total_rows($q);
-        $siswa = $this->Siswa_model->get_limit_data($config['per_page'], $start, $q);
+        // Membuat Style pagination untuk BootStrap v4
+        $config['full_tag_open'] = '<ul class="pagination pagination-sm m-0 float-right" style="margin-top:0px">';
+        $config['full_tag_close'] = '</ul>';
 
-        $this->load->library('pagination');
+        $config['first_link'] = 'First';
+        $config['first_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['first_tag_close'] = '</span></li>';
+
+        $config['last_link'] = 'Last';
+        $config['last_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['last_tag_close'] = '</span></li>';
+
+        $config['next_link'] = 'Next';
+        $config['next_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['next_tag_close'] = '</span></li>';
+
+        $config['prev_link'] = 'Prev';
+        $config['prev_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['prev_tag_close'] = '</span></li>';
+
+        $config['cur_tag_open'] = '<li class="page-item active"><span class="page-link">';
+        $config['cur_tag_close'] = '</span></li>';
+
+        $config['num_tag_open'] = '<li class="page-item"><span class="page-link">';
+        $config['num_tag_close'] = '</span></li>';
+
         $this->pagination->initialize($config);
+        $data['page'] = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
 
-        $data = array(
-            'siswa_data' => $siswa,
-            'q' => $q,
-            'pagination' => $this->pagination->create_links(),
-            'total_rows' => $config['total_rows'],
-            'start' => $start,
-		);
-		$data['siswa_data']= $this->Siswa_model->gabung();
+        //panggil function showPemilih yang ada pada mmodel PemilihModel. 
+               
+
+        $data['pagination'] = $this->pagination->create_links();
+
+        $data['siswa_data']= $this->Siswa_model->gabung($config["per_page"], $data['page']);
         $this->load->view('siswa/siswa_list', $data);
     }
 
